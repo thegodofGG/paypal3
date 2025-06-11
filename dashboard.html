@@ -14,7 +14,7 @@
       color: #1a1a3d;
     }
 
-    
+
     .container {
       padding: 16px;
       max-width: 600px;
@@ -23,14 +23,12 @@
 
     /* Profile Bar */
     .profile-bar {
-      background: #fff;
       border-radius: 16px;
       padding: 16px;
       margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 123, 0.08);
     }
 
     .profile-bar .avatar {
@@ -78,6 +76,7 @@
       margin-bottom: 20px;
       position: relative;
       overflow: hidden;
+      border:1px solid;
     }
 
     .balance-section h1 {
@@ -361,18 +360,25 @@
     .flexy{
       display: flex;
     }
+        .ppimg{
+      width:80px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <!-- Profile Bar -->
+     
     <div class="profile-bar" id="profileBar">
       <div class="info">
-        <div class="name"></div>
-        <div class="email"></div>
+   <img src="./pay-pal.png" class="ppimg">
       </div>
+
+      <a href="/editUser.html">
       <div class="avatar"></div>
+            </a>
     </div>
+   
 
     <div class="balance-section">
     <p>PayPal balance</p>
@@ -462,7 +468,7 @@
     // Render profile bar
     function renderProfile() {
       const profileBar = document.getElementById('profileBar');
-      let userProfile = { name: 'Sidharth Paudel', email: 'sidharth.paudel@example.com' };
+      // let userProfile = { name: 'Hamza Price', email: 'hamza@gmail.com' };
       
       try {
         const storedProfile = JSON.parse(localStorage.getItem('userProfile'));
@@ -476,7 +482,7 @@
       const avatar = profileBar.querySelector('.avatar');
       const randomId = Math.floor(Math.random() * 99) + 1;
       const gender = Math.random() < 0.5 ? 'men' : 'women';
-      const imageUrl = `https://randomuser.me/api/portraits/${gender}/${randomId}.jpg`;
+      const imageUrl = `./op.PNG`;
 
       avatar.style.backgroundImage = `url(${imageUrl})`;
       avatar.textContent = ''; // Clear initials by default
