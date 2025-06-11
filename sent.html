@@ -69,7 +69,7 @@
     /* Toast Notification */
     .toast {
       position: absolute;
-      top: calc(100% + 10px);
+      top: 10;
       left: 50%;
       transform: translateX(-50%) translateY(-10px);
       width: 100%;
@@ -394,7 +394,7 @@
       <div class="avatar"></div>
       <!-- Toast Notification -->
       <div class="toast" id="toastNotification">
-        <div class="message">Payment done successfully</div>
+        <div class="message">Money Sent successfully</div>
         <div class="details"></div>
       </div>
     </div>
@@ -502,8 +502,7 @@
         new Date().getTime() - new Date(transactionData.timestamp).getTime() < 60000
       ) {
         const amount = `- ${transactionData.sendAmount} ${transactionData.sendCurrency}`;
-        toast.querySelector('.details').textContent = `To ${sanitizeInput(transactionData.recipientName)}, ${sanitizeInput(amount)}`;
-        console.log('Showing toast with transaction:', transactionData);
+        toast.querySelector('.details').textContent = `${sanitizeInput(amount)} EUR sent to ${sanitizeInput(transactionData.recipientName)}, `;
       } else {
         // Fallback to show toast for testing
         toast.querySelector('.details').textContent = 'Test transaction: €100 to John Doe';
