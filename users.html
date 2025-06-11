@@ -1,4 +1,3 @@
-<!-- username.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,22 +6,19 @@
   <title>User Suggestions</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link href="https://cdn.tailwindcss.com" rel="stylesheet">
- <style>
-    /* Reset some basic styles */
+  <style>
     * {
-      
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: sans-serif;
       background-color: #fff;
       color: #000;
     }
-    
-    /* Container and layout */
+
     .container {
       max-width: 400px;
       margin: 20px auto;
@@ -31,18 +27,18 @@
       overflow: hidden;
       background-color: #fff;
     }
+
     #qrCode {
       padding: 10px;
       color: #6e6d6d;
     }
-    
-    /* Header and search input */
+
     header {
       display: flex;
       padding: 16px;
       border-bottom: 1px solid #eee;
     }
-    
+
     .search-input {
       width: 100%;
       padding: 10px;
@@ -52,21 +48,18 @@
       border-radius: 8px;
       outline: none;
     }
-    
-    /* Title for the suggestions section */
+
     .suggestion-title {
       padding: 16px;
       font-size: 14px;
       color: #555;
       border-bottom: 1px solid #eee;
     }
-    
-    /* Suggestion list */
+
     .suggestions {
       list-style: none;
     }
-    
-    /* Individual suggestion item */
+
     .suggestion-item {
       display: flex;
       align-items: center;
@@ -74,8 +67,7 @@
       border-bottom: 1px solid #eee;
       cursor: pointer;
     }
-    
-    /* User image or initials */
+
     .user-avatar {
       width: 40px;
       height: 40px;
@@ -88,39 +80,35 @@
       font-weight: bold;
       color: #888;
     }
-    
-    /* User info (name/username) container */
+
     .user-info {
       flex: 1;
       display: flex;
       flex-direction: column;
     }
-    
-    /* Primary text (name) */
+
     .user-name {
       font-size: 16px;
       font-weight: 500;
     }
-    
-    /* Secondary text (username) */
+
     .user-username {
       font-size: 14px;
       color: #888;
     }
-    
-    /* Right icon or button placeholder */
+
     .item-action {
       margin-left: auto;
       color: #999;
       font-size: 16px;
     }
-    
-    /* Hover effect for each item */
+
     .suggestion-item:hover {
       background-color: #f9f9f9;
     }
+
     .top-bar {
-      background-color: #0a2a7a; /* Match your blue color */
+      background-color: #0a2a7a;
       padding: 15px 20px;
       display: flex;
       justify-content: space-between;
@@ -156,73 +144,53 @@
     .logout {
       margin-left: auto;
     }
-    .send{
+
+    .send {
       width: 100%;
       padding: 10px;
     }
 
-    /* Popup Images */
-/* Popup Images */
-#popup-images {
-  position: fixed;
-  top: 79.9%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  visibility: hidden;
-  width: auto;
-  height: auto;
-}
+    #popup-images {
+      position: fixed;
+      top: 79.9%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      visibility: hidden;
+      width: auto;
+      height: auto;
+    }
 
-.popup-img {
-  width: 200px;
-  height: auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+    .popup-img {
+      width: 200px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 
-.image-container {
-  text-align: center;
-}
+    .image-container {
+      text-align: center;
+    }
 
-.image-text {
-  font-size: 16px;
-  color: black;
-  margin-top: 50px;
-}
-#popup-images {
+    .image-text {
+      font-size: 16px;
+      color: black;
+      margin-top: 50px;
+    }
 
-display: flex;
-justify-content: center;
-align-items: center;
-gap: 20px;
-visibility: hidden;
-width: auto;
-height: auto;
-}
+    .card {
+      position: fixed;
+      top: 70%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
 
-.popup-img {
-width: 200px;
-height: auto;
-border-radius: 10px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-    .card{
-        position: fixed;
-       
-    top: 70%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-      }
-      .textCont{
-        text-align: center;
-      }
-        
-
-
+    .textCont {
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -268,8 +236,8 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     const suggestionList = document.getElementById('suggestionList');
 
     function selectUser(user) {
-      localStorage.setItem('selectedUser', JSON.stringify(user));
-      window.location.href = 'sendMoney.html'; // Redirect to sendmoney
+      // Removed: localStorage.setItem('selectedUser', JSON.stringify(user));
+      window.location.href = 'sendMoney.html';
     }
 
     function renderSuggestions(data) {
