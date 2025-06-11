@@ -40,7 +40,7 @@
       display: flex;
       align-items: center;
 
-
+      
       justify-content: center;
       font-size: 20px;
       color: #003087;
@@ -479,7 +479,7 @@
       const nameHash = userProfile.name.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
       const randomId = (nameHash % 99) + 1;
       const gender = nameHash % 2 === 0 ? 'men' : 'women';
-      return `https://randomuser.me/api/portraits/${gender}/${randomId}.jpg`;
+      return https://randomuser.me/api/portraits/${gender}/${randomId}.jpg;
     }
 
     // Show toast notification
@@ -540,7 +540,7 @@
       const avatar = profileBar.querySelector('.avatar');
       const imageUrl = getProfileImageUrl(userProfile);
 
-      avatar.style.backgroundImage = `url(${imageUrl})`;
+      avatar.style.backgroundImage = url(${imageUrl});
       avatar.textContent = ''; // Clear initials by default
 
       // Fallback to initials if image fails
@@ -584,7 +584,7 @@
         const isPositive = !transaction.amount.startsWith('-');
         const avatarInitials = getInitials(transaction.recipient);
         const isUserTransaction = transaction.recipient === userProfile.name;
-        const imageUrl = isUserTransaction ? getProfileImageUrl(userProfile) : `https://randomuser.me/api/portraits/men/${(transaction.recipient.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % 99) + 1}.jpg`;
+        const imageUrl = isUserTransaction ? getProfileImageUrl(userProfile) : https://randomuser.me/api/portraits/men/${(transaction.recipient.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % 99) + 1}.jpg;
 
         const activityItem = document.createElement('div');
         activityItem.className = 'activity-item';
