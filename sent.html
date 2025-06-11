@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     body {
-
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
       background-color: #f5f6fa;
@@ -23,14 +22,12 @@
 
     /* Profile Bar */
     .profile-bar {
-
       border-radius: 16px;
       padding: 16px;
       margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      position: relative;
     }
 
     .profile-bar .avatar {
@@ -66,47 +63,6 @@
       font-size: 13px;
       color: #6b7280;
       margin: 0;
-    }
-
-    /* Toast Notification */
-.toast {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-10px);
-  width: 100%;
-  max-width: 500px; /* adjust as needed */
-  background: #fff;
-  color: #000;
-  padding: 16px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 9999;
-  text-align: center;
-}
-
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .toast .message {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .toast .details {
-      font-size: 12px;
-      font-weight: 400;
     }
 
     /* Balance Section */
@@ -310,7 +266,7 @@
 
     .bottom-nav a {
       color: #6b7280;
-      text-decoration: none;
+      text-decoration: که;
       font-size: 12px;
       font-weight: 500;
       text-align: center;
@@ -329,9 +285,43 @@
       margin-bottom: 4px;
     }
 
-    .activity-item .avatar .use-str {
-      height: 15px;
-      width: 15px;
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 9999;
+    }
+
+    .toast {
+      background: #28a745;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .toast.white {
+      background: #fff;
+      color: #1a1a3d;
+      border: 1px solid #e5e7eb;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast i {
+      margin-right: 8px;
+      font-size: 16px;
     }
 
     /* No Activity Message */
@@ -365,21 +355,14 @@
       .profile-bar .email {
         font-size: 12px;
       }
-
-      .toast .message {
-        font-size: 13px;
-      }
-
-      .toast .details {
-        font-size: 11px;
-      }
     }
 
     .flexy {
-      display: block;
+      display: flex;
     }
-    .ppimg{
-      width:80px;
+
+    .ppimg {
+      width: 80px;
     }
   </style>
 </head>
@@ -389,13 +372,14 @@
     <div class="profile-bar" id="profileBar">
       <div class="info">
         <img src="./pay-pal.png" class="ppimg">
+        <div>
+          <p class="name"></p>
+          <p class="email"></p>
+        </div>
       </div>
-      <div class="avatar"></div>
-      <!-- Toast Notification -->
-      <div class="toast" id="toastNotification">
-        <div class="message">Payment done successfully</div>
-        <div class="details"></div>
-      </div>
+      <a href="/editUser.html">
+        <div class="avatar"></div>
+      </a>
     </div>
 
     <div class="balance-section">
@@ -417,12 +401,8 @@
           Pay in store
         </button>
         <button class="flexy">
-          <div>
           <i class="fas fa-arrow-right"></i>
-          </div>
-          <div>
           Transfer to bank
-          </div>
         </button>
       </div>
     </div>
@@ -451,6 +431,9 @@
       Profile
     </a>
   </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
 
   <script>
     // Sanitize input to prevent XSS
@@ -484,27 +467,41 @@
       }
     }
 
+    // Get user profile image source
+    function getProfileImageUrl(userProfile) {
+      // Check if userProfile has an image URL in localStorage
+      if (userProfile && userProfile.imageUrl) {
+        return userProfile.imageUrl;
+      }
+      // Fallback to a random user image based on name hash for consistency
+      const nameHash = userProfile.name.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+      const randomId = (nameHash % 99) + 1;
+      const gender = nameHash % 2 === 0 ? 'men' : 'women';
+      return `https://randomuser.me/api/portraits/${gender}/${randomId}.jpg`;
+    }
+
     // Show toast notification
     function showToast() {
-      const toast = document.getElementById('toastNotification');
-      let transactionData = null;
+      const toastContainer = document.getElementById('toastContainer');
+      let transactions = [];
 
       try {
-        transactionData = JSON.parse(localStorage.getItem('transactionData'));
+        transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        console.log('Transactions loaded for toast:', transactions);
       } catch (e) {
-        console.error('Error parsing transaction data:', e);
+        console.error('Error parsing transactions:', e);
       }
 
-      if (
-        transactionData &&
-        transactionData.recipientName &&
-        transactionData.sendAmount &&
-        transactionData.sendCurrency &&
-        new Date().getTime() - new Date(transactionData.timestamp).getTime() < 60000
-      ) {
-        const amount = `- ${transactionData.sendAmount} ${transactionData.sendCurrency}`;
-        toast.querySelector('.details').textContent = `To ${sanitizeInput(transactionData.recipientName)}, ${sanitizeInput(amount)}`;
-        
+      if (transactions.length > 0) {
+        const latestTransaction = transactions[0];
+        const toast = document.createElement('div');
+        toast.className = 'toast white';
+        toast.innerHTML = `
+          <i class="fas fa-check-circle"></i>
+          <span class="details">Sent ${sanitizeInput(latestTransaction.amount)} to ${sanitizeInput(latestTransaction.recipient)}</span>
+        `;
+        toastContainer.appendChild(toast);
+
         // Show toast
         setTimeout(() => {
           toast.classList.add('show');
@@ -514,32 +511,32 @@
         setTimeout(() => {
           toast.classList.remove('show');
           setTimeout(() => {
-            toast.style.display = 'none';
+            toast.remove();
           }, 300); // Wait for fade-out transition
         }, 5000);
       } else {
-        toast.style.display = 'none';
+        console.log('No transactions found, no toast shown');
       }
     }
 
     // Render profile bar
     function renderProfile() {
       const profileBar = document.getElementById('profileBar');
-      let userProfile = "./pay-pal.png";
+      let userProfile = { 
+        imageUrl: './op.PNG'
+      };
       
       try {
         const storedProfile = JSON.parse(localStorage.getItem('userProfile'));
         if (storedProfile && storedProfile.name && storedProfile.email) {
-          userProfile = storedProfile;
+          userProfile = { ...storedProfile };
         }
       } catch (e) {
         console.error('Error parsing user profile:', e);
       }
 
       const avatar = profileBar.querySelector('.avatar');
-      const randomId = Math.floor(Math.random() * 99) + 1;
-      const gender = Math.random() < 0.5 ? 'men' : 'women';
-      const imageUrl = `./op.PNG`;
+      const imageUrl = getProfileImageUrl(userProfile);
 
       avatar.style.backgroundImage = `url(${imageUrl})`;
       avatar.textContent = ''; // Clear initials by default
@@ -561,11 +558,17 @@
     function renderTransactions() {
       const activityList = document.getElementById('activityList');
       let transactions = [];
+      let userProfile = { name: 'Hamza Prince' };
       
       try {
         transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        const storedProfile = JSON.parse(localStorage.getItem('userProfile'));
+        if (storedProfile && storedProfile.name) {
+          userProfile = storedProfile;
+        }
+        console.log('Transactions loaded:', transactions);
       } catch (e) {
-        console.error('Error parsing transactions:', e);
+        console.error('Error parsing transactions or user profile:', e);
       }
 
       activityList.innerHTML = '';
@@ -578,17 +581,30 @@
       transactions.forEach(transaction => {
         const isPositive = !transaction.amount.startsWith('-');
         const avatarInitials = getInitials(transaction.recipient);
+        const isUserTransaction = transaction.recipient === userProfile.name;
+        const imageUrl = isUserTransaction ? getProfileImageUrl(userProfile) : `https://randomuser.me/api/portraits/men/${(transaction.recipient.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % 99) + 1}.jpg`;
 
         const activityItem = document.createElement('div');
         activityItem.className = 'activity-item';
         activityItem.innerHTML = `
-          <div class="avatar">${avatarInitials}</div>
+          <div class="avatar" style="background-image: url(${imageUrl});">${avatarInitials}</div>
           <div class="details">
             <div class="name">${sanitizeInput(transaction.recipient)}</div>
             <div class="date">${formatDate(transaction.date)}</div>
           </div>
           <div class="amount ${isPositive ? 'positive' : ''}">${sanitizeInput(transaction.amount)}</div>
         `;
+
+        // Fallback to initials if image fails
+        const avatar = activityItem.querySelector('.avatar');
+        const img = new Image();
+        img.src = imageUrl;
+        img.onerror = () => {
+          avatar.style.backgroundImage = 'none';
+          avatar.classList.add('fallback');
+          avatar.textContent = avatarInitials;
+        };
+
         activityList.appendChild(activityItem);
       });
     }
