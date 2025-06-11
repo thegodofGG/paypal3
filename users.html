@@ -232,13 +232,28 @@
       ];
     }
 
+
+    
+
     const searchInput = document.getElementById('searchInput');
     const suggestionList = document.getElementById('suggestionList');
 
-    function selectUser(user) {
-      // Removed: localStorage.setItem('selectedUser', JSON.stringify(user));
-      window.location.href = 'sendMoney.html';
-    }
+function selectUser(user) {
+  const selectedUser = {
+    name: user.name,
+    username: user.username.replace(/^@/, ''),
+    avatarText: user.avatarText
+  };
+  try {
+    localStorage.setItem('selectedUser', JSON.stringify(selectedUser));
+    console.log('Stored in localStorage:', selectedUser); // Debug log
+    window.location.href = 'sendMoney.html';
+  } catch (e) {
+    console.error('Failed to save to localStorage:', e);
+    alert('Error saving user data. Please check browser settings.');
+  }
+}
+
 
     function renderSuggestions(data) {
       suggestionList.innerHTML = '';
