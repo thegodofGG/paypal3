@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayPal-Style Mobile UI</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      background-color: #f5f6fa;
+      padding-bottom: 80px;
+      color: #1a1a3d;
+    }
+
+    .container {
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Profile Bar */
+    .profile-bar {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 123, 0.08);
+    }
+
+    .profile-bar .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: none;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #003087;
+    }
+
+    .profile-bar .avatar.fallback {
+      background: #e0e7ff;
+    }
+
+    .profile-bar .info {
+      flex: 1;
+    }
+
+    .profile-bar .name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a3d;
+      margin: 0 0 4px;
+    }
+
+    .profile-bar .email {
+      font-size: 13px;
+      color: #6b7280;
+      margin: 0;
+    }
+
+    /* Balance Section */
+    .balance-section {
+      background: linear-gradient(135deg, #ffffff, #f8faff);
+      border-radius: 16px;
+      padding: 24px;
+      /* text-align: center; */
+      box-shadow: 0 6px 16px rgba(0, 0, 123, 0.1);
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .balance-section h1 {
+      font-size: 34px;
+      font-weight: 700;
+      color: #000;
+      margin: 0 0 4px;
+    }
+
+    .balance-section p {
+      font-size: 14px;
+      color: #6b7280;
+      margin: 0 0 16px;
+    }
+
+    .balance-section .buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .balance-section button {
+      background: #0070fa;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .balance-section button:hover {
+      background: #0056b3;
+      transform: translateY(-2px);
+    }
+
+    .balance-section button.request {
+      background: #fff;
+      color: #003087;
+      border: 2px solid #003087;
+    }
+
+    .balance-section button.request:hover {
+      background: #f0f4ff;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .quick-actions h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #000;
+      margin: 0 0 16px;
+    }
+
+    .quick-actions .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .quick-actions button {
+      background: #f8faff;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      color: #000;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      padding:30px;
+      align-items: center;
+      cursor: pointer;
+      width: calc(50% - 6px);
+      box-shadow: 0 3px 8px rgba(0, 0, 123, 0.1);
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .quick-actions button:hover {
+      background: #e6efff;
+      transform: translateY(-2px);
+    }
+
+    .quick-actions button i,
+    .quick-actions button img {
+      margin-right: 10px;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+    }
+
+    /* Recent Activity */
+    .recent-activity {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 123, 0.08);
+    }
+
+    .recent-activity h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #000;
+      margin: 0 0 16px;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #e5e7eb;
+      transition: background 0.2s ease;
+    }
+
+    .activity-item:hover {
+      background: #f8faff;
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-item .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 12px;
+      background: #e0e7ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #003087;
+      overflow: hidden;
+    }
+
+    .activity-item .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .activity-item .details {
+      flex: 1;
+    }
+
+    .activity-item .name {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1a1a3d;
+    }
+
+    .activity-item .date {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .activity-item .amount {
+      font-size: 15px;
+      font-weight: 600;
+      color: #d32f2f;
+    }
+
+    .activity-item .amount.positive {
+      color: #28a745;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: #fff;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 -2px 8px rgba(0, 0, 123, 0.1);
+    }
+
+    .bottom-nav a {
+      color: #6b7280;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      text-align: center;
+      flex: 1;
+      padding: 8px 0;
+      transition: color 0.3s ease;
+    }
+
+    .bottom-nav a.active {
+      color: #0070fa;
+    }
+
+    .bottom-nav i {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .activity-item .avatar .use-str {
+      height: 15px;
+      width: 15px;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 9999;
+    }
+
+    .toast {
+      background: #28a745;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast i {
+      margin-right: 8px;
+      font-size: 16px;
+    }
+
+    /* No Activity Message */
+    .no-activity {
+      text-align: center;
+      font-size: 14px;
+      color: #6b7280;
+      padding: 16px 0;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 400px) {
+      .balance-section h1 {
+        font-size: 28px;
+      }
+
+      .quick-actions button {
+        width: 100%;
+      }
+
+      .profile-bar .avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+      }
+
+      .profile-bar .name {
+        font-size: 14px;
+      }
+
+      .profile-bar .email {
+        font-size: 12px;
+      }
+    }
+    .flexy{
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Profile Bar -->
+    <div class="profile-bar" id="profileBar">
+      <div class="info">
+        <div class="name"></div>
+        <div class="email"></div>
+      </div>
+      <div class="avatar"></div>
+    </div>
+
+    <div class="balance-section">
+    <p>PayPal balance</p>
+      <h1>€8,255,973.00</h1>
+      <div class="buttons">
+        <a href="./users.html">
+          <button>Send</button>
+        </a>
+        <button class="request">Request</button>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <h3>Quick Actions</h3>
+      <div class="actions">
+        <button class="flexy">
+          <img src="./store.png" alt="Store Logo" />
+          Pay in store
+        </button>
+        <button class="flexy">
+          <i class="fas fa-arrow-right"></i>
+          Transfer to bank
+        </button>
+      </div>
+    </div>
+
+    <div class="recent-activity">
+      <h3>Recent activity</h3>
+      <div id="activityList"></div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="#" class="active">
+      <i class="fas fa-home"></i>
+      Home
+    </a>
+    <a href="#">
+      <i class="fas fa-wallet"></i>
+      Wallet
+    </a>
+    <a href="#">
+      <i class="fas fa-money-check"></i>
+      Payments
+    </a>
+    <a href="#">
+      <i class="fas fa-user"></i>
+      Profile
+    </a>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    // Sanitize input to prevent XSS
+    function sanitizeInput(input) {
+      const div = document.createElement('div');
+      div.textContent = input;
+      return div.innerHTML;
+    }
+
+    // Generate initials from name
+    function getInitials(name) {
+      if (!name) return '??';
+      const words = name.trim().split(' ');
+      return words
+        .slice(0, 2)
+        .map(word => word.charAt(0).toUpperCase())
+        .join('');
+    }
+
+    // Format date (e.g., "6/11/2025, 4:07:14 PM" → "11/06/2025")
+    function formatDate(dateStr) {
+      try {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        }).split('/').join('/');
+      } catch {
+        return dateStr;
+      }
+    }
+
+    // Render profile bar
+    function renderProfile() {
+      const profileBar = document.getElementById('profileBar');
+      let userProfile = { name: 'Sidharth Paudel', email: 'sidharth.paudel@example.com' };
+      
+      try {
+        const storedProfile = JSON.parse(localStorage.getItem('userProfile'));
+        if (storedProfile && storedProfile.name && storedProfile.email) {
+          userProfile = storedProfile;
+        }
+      } catch (e) {
+        console.error('Error parsing user profile:', e);
+      }
+
+      const avatar = profileBar.querySelector('.avatar');
+      const randomId = Math.floor(Math.random() * 99) + 1;
+      const gender = Math.random() < 0.5 ? 'men' : 'women';
+      const imageUrl = `https://randomuser.me/api/portraits/${gender}/${randomId}.jpg`;
+
+      avatar.style.backgroundImage = `url(${imageUrl})`;
+      avatar.textContent = ''; // Clear initials by default
+
+      // Fallback to initials if image fails
+      const img = new Image();
+      img.src = imageUrl;
+      img.onerror = () => {
+        avatar.style.backgroundImage = 'none';
+        avatar.classList.add('fallback');
+        avatar.textContent = getInitials(userProfile.name);
+      };
+
+      profileBar.querySelector('.name').textContent = sanitizeInput(userProfile.name);
+      profileBar.querySelector('.email').textContent = sanitizeInput(userProfile.email);
+    }
+
+    // Render transactions
+    function renderTransactions() {
+      const activityList = document.getElementById('activityList');
+      let transactions = [];
+      
+      try {
+        transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+      } catch (e) {
+        console.error('Error parsing transactions:', e);
+      }
+
+      activityList.innerHTML = '';
+
+      if (!transactions.length) {
+        activityList.innerHTML = '<div class="no-activity">No recent activity</div>';
+        return;
+      }
+
+      transactions.forEach(transaction => {
+        const isPositive = !transaction.amount.startsWith('-');
+        const avatarInitials = getInitials(transaction.recipient);
+
+        const activityItem = document.createElement('div');
+        activityItem.className = 'activity-item';
+        activityItem.innerHTML = `
+          <div class="avatar">${avatarInitials}</div>
+          <div class="details">
+            <div class="name">${sanitizeInput(transaction.recipient)}</div>
+            <div class="date">${formatDate(transaction.date)}</div>
+          </div>
+          <div class="amount ${isPositive ? 'positive' : ''}">${sanitizeInput(transaction.amount)}</div>
+        `;
+        activityList.appendChild(activityItem);
+      });
+    }
+
+    // Function to show toast notification
+    function showToast(message, iconClass = 'fas fa-check-circle') {
+      const toastContainer = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `
+        <i class="${iconClass}"></i>
+        ${sanitizeInput(message)}
+      `;
+      toastContainer.appendChild(toast);
+
+      // Show toast
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 100);
+
+      // Hide and remove toast after 3 seconds
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          toast.remove();
+        }, 300); // Wait for fade-out transition
+      }, 3000);
+    }
+
+    // Render profile, transactions, and show toast on page load
+    window.onload = () => {
+      try {
+        renderProfile();
+        renderTransactions();
+        // Show toast only if recent transaction exists
+        const transactionData = JSON.parse(localStorage.getItem('transactionData'));
+        if (transactionData && new Date().getTime() - new Date(transactionData.timestamp).getTime() < 60000) {
+          showToast('Sent successfully');
+        }
+      } catch (e) {
+        console.error('Error during page load:', e);
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!-- username.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Suggestions</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+ <style>
+    /* Reset some basic styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: sans-serif;
+      background-color: #fff;
+      color: #000;
+    }
+    
+    /* Container and layout */
+    .container {
+      max-width: 400px;
+      margin: 20px auto;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: #fff;
+    }
+    #qrCode {
+      padding: 10px;
+      color: #6e6d6d;
+    }
+    
+    /* Header and search input */
+    header {
+      display: flex;
+      padding: 16px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      background: #cbcaca;
+      border-radius: 8px;
+      outline: none;
+    }
+    
+    /* Title for the suggestions section */
+    .suggestion-title {
+      padding: 16px;
+      font-size: 14px;
+      color: #555;
+      border-bottom: 1px solid #eee;
+    }
+    
+    /* Suggestion list */
+    .suggestions {
+      list-style: none;
+    }
+    
+    /* Individual suggestion item */
+    .suggestion-item {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+    
+    /* User image or initials */
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background-color: #eee;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-weight: bold;
+      color: #888;
+    }
+    
+    /* User info (name/username) container */
+    .user-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Primary text (name) */
+    .user-name {
+      font-size: 16px;
+      font-weight: 500;
+    }
+    
+    /* Secondary text (username) */
+    .user-username {
+      font-size: 14px;
+      color: #888;
+    }
+    
+    /* Right icon or button placeholder */
+    .item-action {
+      margin-left: auto;
+      color: #999;
+      font-size: 16px;
+    }
+    
+    /* Hover effect for each item */
+    .suggestion-item:hover {
+      background-color: #f9f9f9;
+    }
+    .top-bar {
+      background-color: #0a2a7a; /* Match your blue color */
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    .top-bar ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .top-bar ul li {
+      display: flex;
+      align-items: center;
+    }
+
+    .top-bar ul li a {
+      text-decoration: none;
+      color: white;
+      font-size: 16px;
+    }
+
+    .settings i {
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .logout {
+      margin-left: auto;
+    }
+    .send{
+      width: 100%;
+      padding: 10px;
+    }
+
+    /* Popup Images */
+/* Popup Images */
+#popup-images {
+  position: fixed;
+  top: 79.9%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  visibility: hidden;
+  width: auto;
+  height: auto;
+}
+
+.popup-img {
+  width: 200px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.image-container {
+  text-align: center;
+}
+
+.image-text {
+  font-size: 16px;
+  color: black;
+  margin-top: 50px;
+}
+#popup-images {
+
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 20px;
+visibility: hidden;
+width: auto;
+height: auto;
+}
+
+.popup-img {
+width: 200px;
+height: auto;
+border-radius: 10px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+    .card{
+        position: fixed;
+       
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+      }
+      .textCont{
+        text-align: center;
+      }
+        
+
+
+  </style>
+</head>
+<body>
+
+  <!-- Navigation bar -->
+  <nav class="top-bar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">Send</a></li>
+      <li><a href="transaction.html">Activity</a></li>
+      <li><a href="#">Help <i class="fa-regular fa-bell"></i></a></li>
+      <li class="settings"><i class="fa-solid fa-gear"></i></li>
+      <li><a href="#" class="logout">LOG OUT</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main content -->
+  <div class="container">
+    <div><h2 class="send">Send payment to</h2></div>
+
+    <header>
+      <a href="index.html"><i class="fa-solid fa-arrow-left" id="qrCode"></i></a>
+      <input type="text" class="search-input" placeholder="Name, username or email" id="searchInput" />
+      <i class="fa-solid fa-qrcode" id="qrCode"></i>
+    </header>
+
+    <div class="suggestion-title">Suggested</div>
+    <ul class="suggestions" id="suggestionList"></ul>
+  </div>
+
+  <script>
+    let suggestionsData = JSON.parse(localStorage.getItem("jsonData")) || [];
+
+    if (!suggestionsData.length) {
+      suggestionsData = [
+        { name: 'John Doe', username: '@john', avatarText: 'JD' },
+        { name: 'Jane Smith', username: '@jane', avatarText: 'JS' },
+        { name: 'Alice Johnson', username: '@alice', avatarText: 'AJ' }
+      ];
+    }
+
+    const searchInput = document.getElementById('searchInput');
+    const suggestionList = document.getElementById('suggestionList');
+
+    function selectUser(user) {
+      localStorage.setItem('selectedUser', JSON.stringify(user));
+      window.location.href = 'sendMoney.html'; // Redirect to sendmoney
+    }
+
+    function renderSuggestions(data) {
+      suggestionList.innerHTML = '';
+      data.forEach((user) => {
+        const li = document.createElement('li');
+        li.classList.add('suggestion-item');
+
+        const avatarDiv = document.createElement('div');
+        avatarDiv.classList.add('user-avatar');
+        avatarDiv.textContent = user.avatarText;
+
+        const infoDiv = document.createElement('div');
+        infoDiv.classList.add('user-info');
+
+        const nameSpan = document.createElement('span');
+        nameSpan.classList.add('user-name');
+        nameSpan.textContent = user.name;
+
+        const usernameSpan = document.createElement('span');
+        usernameSpan.classList.add('user-username');
+        usernameSpan.textContent = user.username;
+
+        infoDiv.appendChild(nameSpan);
+        infoDiv.appendChild(usernameSpan);
+
+        const actionSpan = document.createElement('span');
+        actionSpan.classList.add('item-action');
+        actionSpan.textContent = '•';
+
+        li.appendChild(avatarDiv);
+        li.appendChild(infoDiv);
+        li.appendChild(actionSpan);
+
+        li.addEventListener('click', () => selectUser(user));
+        suggestionList.appendChild(li);
+      });
+    }
+
+    renderSuggestions(suggestionsData);
+
+    searchInput.addEventListener('input', function () {
+      const query = this.value.trim();
+      if (!query) {
+        renderSuggestions(suggestionsData);
+        return;
+      }
+
+      let filteredData = suggestionsData.filter((user) =>
+        user.name.toLowerCase().includes(query.toLowerCase()) ||
+        user.username.toLowerCase().includes(query.toLowerCase())
+      );
+
+      if (filteredData.length === 0) {
+        const avatarLetters = query.slice(0, 2).toUpperCase();
+        filteredData.push({
+          name: query,
+          username: '@' + query.replace(/\s+/g, ''),
+          avatarText: avatarLetters
+        });
+      }
+
+      renderSuggestions(filteredData);
+    });
+  </script>
+</body>
+</html>
