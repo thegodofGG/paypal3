@@ -196,34 +196,6 @@
       text-decoration: none;
       color: #000;
     }
-
-
-    #sendBtn {
-  background-color: #1d4ed8;
-  color: #fff;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: 500;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  width: 30%;
-  margin: 10px 20px;
-  transition: background-color 0.3s ease;
-}
-
-#sendBtn:hover {
-  background-color: #2563eb; 
-}
-
-#sendBtn:active {
-  background-color: #1e40af; 
-}
-
-#sendBtn:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); 
-}
   </style>
 </head>
 <body>
@@ -238,9 +210,6 @@
     <header>
       <input type="text" class="search-input" placeholder="Name, username or email" id="searchInput" />
     </header>
-<li style="list-style: none;">
-  <button id="sendBtn">Send</button>
-</li>
 
     <div class="suggestion-title">Suggested</div>
     <ul class="suggestions" id="suggestionList"></ul>
@@ -342,26 +311,6 @@ function selectUser(user) {
 
       renderSuggestions(filteredData);
     });
-
-    const sendBtn = document.getElementById('sendBtn');
-
-
-sendBtn.addEventListener('click', () => {
-  const query = searchInput.value.trim();
-  if (!query) {
-    alert('Please enter a name or username.');
-    return;
-  }
-
-  const avatarLetters = query.slice(0, 2).toUpperCase();
-  const user = {
-    name: query,
-    username: '@' + query.replace(/\s+/g, ''),
-    avatarText: avatarLetters
-  };
-
-  selectUser(user);
-});
   </script>
 </body>
 </html>
