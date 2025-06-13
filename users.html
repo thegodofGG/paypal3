@@ -49,6 +49,11 @@
       outline: none;
     }
 
+
+    .search-input:focus {
+  border-color: #1e90ff;
+  box-shadow: 0 0 8px rgba(30, 144, 255, 0.5); 
+}
     .suggestion-title {
       padding: 16px;
       font-size: 14px;
@@ -211,6 +216,7 @@
   width: 30%;
   margin: 10px 20px;
   transition: background-color 0.3s ease;
+ margin-bottom: 30px;
 }
 
 #sendBtn:hover {
@@ -269,7 +275,9 @@
   <button id="sendBtn">Next</button>
 </li>
 
-    <div class="suggestion-title">Suggested</div>
+     <a style="padding: 15px; size:7px; text-decoration: underline; color: #1d4ed8;">Show all contacts</a>
+         <div class="suggestion-title" style="font-weight:bold; font-size:20px;">More Options</div>
+
     <ul class="suggestions" id="suggestionList"></ul>
   </div>
 
