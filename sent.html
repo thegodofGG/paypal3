@@ -369,11 +369,11 @@
       }
 
       .toast .message {
-        font-size: 13px;
+        font-size: 28px;
       }
 
       .toast .details {
-        font-size: 11px;
+        font-size: 28px;
       }
     }
 
@@ -514,7 +514,7 @@
         new Date().getTime() - new Date(transactionData.timestamp).getTime() < 60000
       ) {
         const amount = `- ${transactionData.sendAmount} ${transactionData.sendCurrency}`;
-        toast.querySelector('.details').textContent = `${sanitizeInput(amount)} EUR sent to ${sanitizeInput(transactionData.recipientName)}, `;
+        toast.querySelector('.details').textContent = `${sanitizeInput(amount)} sent to ${sanitizeInput(transactionData.recipientName)}, `;
       } else {
         // Fallback to show toast for testing
         toast.querySelector('.details').textContent = 'Test transaction: €100 to John Doe';

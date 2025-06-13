@@ -79,7 +79,7 @@
       width: 100%;
       font-size: 18px;
       border-radius: 10px;
-      margin: 15px 0 5px;
+      margin: 15px 0;
       cursor: pointer;
       transition: background 0.5s;
     }
@@ -111,7 +111,7 @@
   <div class="container">
     <div class="user-info">
       <div class="avatar" id="userAvatar">??</div>
-      <p class="username" id="userName">@username</p>
+      <p class="username" id="userName">@Username</p>
     </div>
 
     <div class="amount-box">
@@ -128,14 +128,14 @@
   </div>
 
   <script>
-    // Sanitize input to avoid XSS
+    // Sanitize input
     function sanitizeInput(input) {
       const div = document.createElement('div');
       div.textContent = input;
       return div.innerHTML;
     }
 
-    // Load user data from localStorage
+    // Load user from localStorage
     let user;
     try {
       user = JSON.parse(localStorage.getItem('selectedUser'));
@@ -146,14 +146,13 @@
 
     if (user) {
       document.getElementById('userAvatar').textContent = sanitizeInput(user.avatarText || '??');
-      const usernameDisplay = user?.username ? `@${user.username}` : '@unknown';
-      document.getElementById('userName').textContent = usernameDisplay;
+      document.getElementById('userName').textContent = sanitizeInput(`${user.name || 'Unknown'} (${user.username || '@unknown'})`);
     }
 
+    // Input validation
     const amountInput = document.getElementById('amountInput');
     const sendButton = document.getElementById('sendButton');
 
-    // Input validation: restrict to numbers and max 2 decimals
     amountInput.addEventListener('input', () => {
       let value = amountInput.value.replace(/[^0-9.]/g, '');
       const parts = value.split('.');
@@ -166,7 +165,6 @@
       amountInput.value = value || '0.00';
     });
 
-    // On clicking the send button
     sendButton.addEventListener('click', () => {
       const amount = parseFloat(amountInput.value) || 0;
       if (amount <= 0) {
@@ -174,13 +172,12 @@
         return;
       }
 
-      // Disable button & update text
-      sendButton.disabled = true;
-      sendButton.textContent = `Sending €${amount.toFixed(2)}`;
-      sendButton.style.backgroundColor = "#87CEEB";
-      sendButton.style.color = "white";
+sendButton.disabled = true;
+sendButton.textContent = "Sending...";
+sendButton.style.backgroundColor = "#87CEEB";
+sendButton.style.color = "white";
 
-      // Prepare transaction data
+      // Save transaction to localStorage
       const transactionData = {
         sendAmount: amount.toFixed(2),
         sendCurrency: 'EUR',
@@ -191,10 +188,7 @@
         timestamp: new Date().toLocaleString()
       };
 
-      // Load existing transactions or create new array
       let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-
-      // Add new transaction at the start
       transactions.unshift({
         recipient: transactionData.recipientName,
         date: transactionData.timestamp,
@@ -209,10 +203,9 @@
         console.error('Error saving to localStorage:', e);
       }
 
-      // Redirect after short delay
       setTimeout(() => {
-        window.location.href = "sent.html";
-      }, 1000);
+        window.location.href = "sent.html"; 
+      }, 2000);
     });
   </script>
 </body>

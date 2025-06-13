@@ -224,6 +224,29 @@
   outline: none;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); 
 }
+.search-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 10px 10px 35px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 16px;
+}
   </style>
 </head>
 <body>
@@ -236,10 +259,13 @@
     <div>      <a href="index.html" class="linlin"><h2 class="send">Send Money</h2></a></div>
 
     <header>
-      <input type="text" class="search-input" placeholder="Name, username or email" id="searchInput" />
+<div class="search-container">
+  <i class="fas fa-search search-icon"></i>
+  <input type="text" class="search-input" placeholder="Name, username or email" id="searchInput" />
+</div>
     </header>
 <li style="list-style: none;">
-  <button id="sendBtn">Send</button>
+  <button id="sendBtn">Next</button>
 </li>
 
     <div class="suggestion-title">Suggested</div>
