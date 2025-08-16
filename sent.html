@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PayPal-Style Mobile UI</title>
+  <title>PayPal</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
@@ -384,13 +384,8 @@
       }
     }
 
-    .flexy {
-      display: flex;
-    }
-    .imgr {
-      width: 80px;
-      position: absolute;
-    }
+    .flexy { display: flex; }
+    .imgr { width: 80px; position: absolute; }
     .resact {
       display: flex;
       width: 100%;
@@ -443,7 +438,7 @@
     <div class="recent-activity">
       <div class="resact">
         <h3>Recent activity</h3>
-        <a style="text-decoration: underline;">Clear all</a>
+        <a style="text-decoration: underline; cursor: pointer;">Clear all</a>
       </div>
       <div id="activityList"></div>
     </div>
@@ -469,6 +464,50 @@
   </div>
 
   <script>
+    // ------------ BALANCE HELPERS (NEW) ------------
+    function parseCurrencyToNumber(str) {
+      if (!str) return 0;
+      // Keep digits, dot, and minus; drop everything else (€, spaces, commas)
+      const cleaned = String(str).replace(/[^0-9.\-]/g, "");
+      const n = parseFloat(cleaned);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function formatEUR(value) {
+      return Number(value).toLocaleString('en-US', { style: 'currency', currency: 'EUR' });
+    }
+
+    function getBaseBalanceEUR() {
+      const h1 = document.querySelector('.balance-section h1');
+      const stored = localStorage.getItem('baseBalanceEUR');
+      if (stored !== null && !isNaN(parseFloat(stored))) {
+        return parseFloat(stored);
+      }
+      const fromDom = parseCurrencyToNumber(h1?.textContent || '0');
+      localStorage.setItem('baseBalanceEUR', String(fromDom));
+      return fromDom;
+    }
+
+    function setBalanceDisplay(value) {
+      const h1 = document.querySelector('.balance-section h1');
+      if (h1) h1.textContent = formatEUR(value);
+    }
+
+    function recomputeAndRenderBalance() {
+      const base = getBaseBalanceEUR();
+      let txs = [];
+      try {
+        txs = JSON.parse(localStorage.getItem('transactions') || '[]');
+      } catch {}
+      let delta = 0;
+      for (const t of txs) {
+        // Accept forms like "- €100.00", "€50.00", "-100 EUR", etc.
+        delta += parseCurrencyToNumber(t.amount);
+      }
+      setBalanceDisplay(base + delta);
+    }
+    // ------------ END BALANCE HELPERS ------------
+
     // Sanitize input to prevent XSS
     function sanitizeInput(input) {
       const div = document.createElement('div');
@@ -505,10 +544,8 @@
       const toast = document.getElementById('toastNotification');
       let transactionData = null;
 
-      console.log('Checking transaction data for toast...');
       try {
         transactionData = JSON.parse(localStorage.getItem('transactionData'));
-        console.log('Transaction data:', transactionData);
       } catch (e) {
         console.error('Error parsing transaction data:', e);
       }
@@ -521,18 +558,17 @@
         new Date().getTime() - new Date(transactionData.timestamp).getTime() < 60000
       ) {
         const amount = `- ${transactionData.sendAmount} ${transactionData.sendCurrency}`;
-        toast.querySelector('.details').textContent = `${sanitizeInput(amount)} sent to ${sanitizeInput(transactionData.recipientName)}`;
+        toast.querySelector('.details').textContent =
+          `${sanitizeInput(amount)} sent to ${sanitizeInput(transactionData.recipientName)}`;
       } else {
         // Fallback to show toast for testing
         toast.querySelector('.details').textContent = 'Test transaction: €100 to John Doe';
-        console.log('No recent transaction, showing fallback toast');
       }
 
       // Show toast
       toast.style.display = 'flex';
       setTimeout(() => {
         toast.classList.add('show');
-        console.log('Toast displayed');
       }, 100);
 
       // Hide toast after 5 seconds
@@ -540,8 +576,7 @@
         toast.classList.remove('show');
         setTimeout(() => {
           toast.style.display = 'none';
-          console.log('Toast hidden');
-        }, 300); // Wait for fade-out transition
+        }, 300);
       }, 5000);
     }
 
@@ -549,7 +584,7 @@
     function renderProfile() {
       const profileBar = document.getElementById('profileBar');
       let userProfile = { name: 'Sidharth Paudel', email: 'sidharth.paudel@example.com' };
-      
+
       try {
         const storedProfile = JSON.parse(localStorage.getItem('userProfile'));
         if (storedProfile && storedProfile.name && storedProfile.email) {
@@ -560,8 +595,6 @@
       }
 
       const avatar = profileBar.querySelector('.avatar');
-      const randomId = Math.floor(Math.random() * 99) + 1;
-      const gender = Math.random() < 0.5 ? 'men' : 'women';
       const imageUrl = `./op.PNG`;
 
       avatar.style.backgroundImage = `url(${imageUrl})`;
@@ -583,7 +616,7 @@
     function renderTransactions() {
       const activityList = document.getElementById('activityList');
       let transactions = [];
-      
+
       try {
         transactions = JSON.parse(localStorage.getItem('transactions')) || [];
       } catch (e) {
@@ -594,11 +627,13 @@
 
       if (!transactions.length) {
         activityList.innerHTML = '<div class="no-activity">No recent activity</div>';
+        // Even with no activity, ensure the base balance is displayed
+        recomputeAndRenderBalance(); // <-- NEW: keep balance in sync
         return;
       }
 
       transactions.forEach(transaction => {
-        const isPositive = !transaction.amount.startsWith('-');
+        const isPositive = !String(transaction.amount).trim().startsWith('-');
         const avatarInitials = getInitials(transaction.recipient);
 
         const activityItem = document.createElement('div');
@@ -613,15 +648,30 @@
         `;
         activityList.appendChild(activityItem);
       });
+
+      recomputeAndRenderBalance(); // <-- NEW: recompute after rendering list
     }
 
     window.onload = () => {
       try {
         renderProfile();
         renderTransactions();
+        // Ensure balance is synced on load (in case transactions were already present)
+        recomputeAndRenderBalance(); // <-- NEW
         showToast();
       } catch (e) {
         console.error('Error during page load:', e);
+      }
+
+      // Wire up "Clear all" to reset recent activity and recompute balance
+      const clearAll = document.querySelector('.recent-activity a');
+      if (clearAll) {
+        clearAll.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          localStorage.removeItem('transactions');
+          renderTransactions();
+          recomputeAndRenderBalance();
+        });
       }
     };
   </script>
