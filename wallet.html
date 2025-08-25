@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wallet • PayPal-Style</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root{
+      --bg:#f5f6fa;
+      --text:#1a1a3d;
+      --muted:#6b7280;
+      --brand:#1777ff;
+      --brand-dark:#0e5fe0;
+      --card-blue-1:#2b66ff;
+      --card-blue-2:#0e41f0;
+      --divider:#e5e7eb;
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding-bottom:90px; /* for bottom nav */
+    }
+    .container{max-width:540px;margin:0 auto;padding:16px}
+    /* Top bar */
+    .topbar{
+      display:flex; align-items:center; gap:12px; margin-bottom:12px;
+    }
+    .topbar h1{
+      margin:0; font-size:28px; font-weight:800; letter-spacing:.2px;
+    }
+    .pp-logo{
+      margin-left:auto; height:22px; opacity:.9;
+    }
+    /* Tabs */
+    .tabs{
+      background:#fff; border:1px solid var(--divider); border-radius:14px;
+      display:flex; overflow:hidden; margin:8px 0 18px; height:40px;
+    }
+    .tab{
+      flex:1; display:flex; align-items:center; justify-content:center;
+      font-weight:600; font-size:14px; color:#6b7280; text-decoration:none;
+    }
+    .tab.active{ background:#f1f5ff; color:#111; }
+    /* Wallet card */
+    .card{
+      background:linear-gradient(165deg,var(--card-blue-1),var(--card-blue-2));
+      border-radius:18px; color:#fff; padding:20px; box-shadow:0 10px 24px rgba(0,0,0,.12);
+      position:relative; overflow:hidden; margin-bottom:16px;
+    }
+    .card .water{ position:absolute; right:-30px; top:-20px; width:150px; opacity:.2; filter:blur(.4px); }
+    .label{font-size:14px; opacity:.95; margin-bottom:8px}
+    .balance{font-size:34px; font-weight:800; letter-spacing:.4px; margin:0 0 18px}
+    .card .row{display:flex; justify-content:space-between; align-items:center; color:#dfe7ff}
+    .card .num{letter-spacing:2px; font-weight:600}
+    .card .meta{margin-top:14px; display:flex; justify-content:space-between; font-size:13px}
+    .meta .left small{display:block; opacity:.85}
+    .meta .right{font-weight:700; letter-spacing:.6px}
+    /* List buttons */
+    .list{
+      background:#fff; border-radius:16px; overflow:hidden; border:1px solid var(--divider);
+    }
+    .item{
+      display:flex; align-items:center; gap:12px; padding:16px; text-decoration:none; color:inherit;
+      border-bottom:1px solid var(--divider);
+    }
+    .item:last-child{border-bottom:none}
+    .item .icon{
+      width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+      background:#eef3ff; color:var(--brand);
+      flex:none;
+    }
+    .item .title{font-weight:600}
+    .item .chev{margin-left:auto; color:#9aa1ad}
+    /* Section heading */
+    .section-title{margin:18px 4px 10px; font-weight:800; font-size:18px}
+    .box{background:#fff; border:1px solid var(--divider); border-radius:16px; padding:16px; color:var(--muted)}
+        .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: #fff;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 -2px 8px rgba(0, 0, 123, 0.1);
+    }
+
+    .bottom-nav a {
+      color: #6b7280;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      text-align: center;
+      flex: 1;
+      padding: 8px 0;
+      transition: color 0.3s ease;
+    }
+
+    .bottom-nav a.active {
+      color: #0070fa;
+    }
+
+    .bottom-nav i {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .activity-item .avatar .use-str {
+      height: 15px;
+      width: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- header -->
+    <div class="topbar">
+      <h1>Wallet</h1>
+      <img class="pp-logo" src="./pay-pal.png" alt="PayPal" />
+    </div>
+
+    <!-- tabs -->
+    <div class="tabs" role="tablist" aria-label="Wallet Tabs">
+      <a class="tab active" href="./wallet.html">Wallet</a>
+      <a class="tab" href="./activity.html">Activity</a>
+    </div>
+
+    <!-- blue card -->
+    <section class="card" aria-label="Primary card">
+      <img class="water" src="./pay-pal.png" alt="">
+      <div class="label">Current Balance</div>
+      <p class="balance">€9,999,950.00</p>
+
+      <div class="row">
+        <span class="num">4358&nbsp;1584&nbsp;2598&nbsp;8452</span>
+        <img src="./pay-pal.png" alt="PayPal" style="height:20px;opacity:.9">
+      </div>
+
+      <div class="meta">
+        <div class="left">
+          <small>Expires</small>
+          <strong>12/27</strong>
+        </div>
+        <div class="right">AL HABIB</div>
+      </div>
+    </section>
+
+    <!-- actions -->
+    <nav class="list" aria-label="Wallet actions">
+      <a class="item" href="./add-money.html">
+        <span class="icon"><i class="fa-solid fa-circle-arrow-down"></i></span>
+        <span class="title">Add money</span>
+        <span class="chev"><i class="fa-solid fa-chevron-right"></i></span>
+      </a>
+      <a class="item" href="./transfer.html">
+        <span class="icon"><i class="fa-solid fa-arrow-right-arrow-left"></i></span>
+        <span class="title">Transfer to bank</span>
+        <span class="chev"><i class="fa-solid fa-chevron-right"></i></span>
+      </a>
+    </nav>
+
+    <!-- currencies -->
+    <h3 class="section-title">Currencies</h3>
+    <div class="box">No other currencies added yet.</div>
+  </div>
+
+  <!-- bottom nav -->
+   <div class="bottom-nav">
+    <a href="dashboard.html" >
+      <i class="fas fa-home"></i>
+      Home
+    </a>
+    <a href="wallet.html" class="active">
+      <i class="fas fa-wallet"></i>
+      Wallet
+    </a>
+    <a href="#">
+      <i class="fas fa-money-check"></i>
+      Payments
+    </a>
+    <a href="#">
+      <i class="fas fa-user"></i>
+      Profile
+    </a>
+  </div>
+</body>
+</html>

@@ -1,290 +1,212 @@
-<!-- user.html -->
+<!-- users.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Suggestions</title>
-    <link rel="manifest" href="manifest.json">
+  <title>Send Money</title>
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <link href="https://cdn.tailwindcss.com" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    * { margin:0; padding:0; box-sizing:border-box; }
+    :root{
+      --ink:#0b0b0c;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --primary:#1d4ed8;
+      --bg:#ffffff;
+      --bg-soft:#f9fafb;
     }
-
-    body {
-      font-family: sans-serif;
-      background-color: #fff;
-      color: #000;
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Inter, system-ui, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
     }
-
-    .container {
-      max-width: 400px;
-      margin: 20px auto;
-      border: 1px solid #ddd;
-      border-radius: 8px;
+    .wrap{
+      max-width: 420px;
+      margin: 20px auto 40px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
       overflow: hidden;
-      background-color: #fff;
+      background: var(--bg);
     }
 
-    #qrCode {
-      padding: 10px;
-      color: #6e6d6d;
+    /* Top: Tab title like screenshot */
+    .tabbar{
+      padding: 18px 20px 8px;
+      border-bottom: 1px solid var(--line);
     }
-
-    header {
-      display: flex;
-      padding: 16px;
-      border-bottom: 1px solid #eee;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid blue;
-      border-radius: 8px;
-      outline: none;
-    }
-
-
-    .search-input:focus {
-  border-color: #1e90ff;
-  box-shadow: 0 0 8px rgba(30, 144, 255, 0.5); 
-}
-    .suggestion-title {
-      padding: 16px;
-      font-size: 14px;
-      color: #555;
-      border-bottom: 1px solid #eee;
-    }
-
-    .suggestions {
-      list-style: none;
-    }
-
-    .suggestion-item {
-      display: flex;
-      align-items: center;
-      padding: 16px;
-      border-bottom: 1px solid #eee;
-      cursor: pointer;
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      background-color: #eee;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12px;
-      font-weight: bold;
-      color: #888;
-    }
-
-    .user-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .user-name {
-      font-size: 16px;
+    .tablabel{
       font-weight: 500;
+      font-size: 20px;
+      display: inline-block;
+      padding-bottom: 10px;
+      position: relative;
+    }
+    .tablabel::after{
+      content:"";
+      position:absolute;
+      left:0; right:0; bottom:0;
+      height:2px;
+      background:#111827;
+      border-radius:2px;
+      width: 140px; /* underline width similar to screenshot */
     }
 
-    .user-username {
+    /* Search */
+    .header{ padding:16px 16px 0; }
+    .search-box{ position:relative; }
+    .search-input{
+      width:100%;
+      height:48px;
+      padding: 0 14px 0 40px;
+      border:1px solid var(--line);
+      border-radius: 12px;
+      font-size:16px;
+      outline:none;
+      background:#fff;
+    }
+    .search-input::placeholder{ color:#9ca3af; }
+    .search-input:focus{
+      border-color:#1e90ff;
+      box-shadow: 0 0 0 4px rgba(30,144,255,.15);
+    }
+    .search-icon{
+      position:absolute; left:12px; top:50%;
+      transform: translateY(-50%);
+      color:#9ca3af; font-size:16px;
+    }
+
+    /* Next button + link */
+    .actions{
+      padding: 12px 16px 0;
+    }
+    .next-btn{
+      width:110px;
+      height:42px;
+      border-radius: 22px;
+      border:1px solid #e6e7eb;
+      background:#f3f4f6;
+      color:#9aa0a6;
+      font-weight:600; font-size:16px;
+      cursor:not-allowed;
+    }
+    .next-btn.enabled{
+      background: var(--primary);
+      color:#fff;
+      cursor:pointer;
+      border-color: var(--primary);
+    }
+    .link{
+      display:inline-block;
+      margin: 12px 0 8px;
+      color:#1d4ed8;
+      text-decoration: underline;
+      font-size:16px;
+    }
+
+    /* Suggestions list (appears as you type) */
+    .list{ list-style:none; }
+    .suggestion-title{
+      padding: 16px;
       font-size: 14px;
-      color: #888;
+      color:#6b7280;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      font-weight:600;
     }
-
-    .item-action {
-      margin-left: auto;
-      color: #999;
-      font-size: 16px;
+    .item{
+      display:flex; align-items:center;
+      padding:16px;
+      border-bottom:1px solid var(--line);
+      cursor:pointer;
     }
-
-    .suggestion-item:hover {
-      background-color: #f9f9f9;
+    .avatar{
+      width:40px; height:40px; border-radius:999px;
+      background:#eef2ff; color:#6366f1;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:700; margin-right:12px;
     }
+    .info{ display:flex; flex-direction:column; gap:2px; }
+    .name{ font-size:16px; font-weight:600; }
+    .handle{ font-size:13px; color:#6b7280; }
 
-    .top-bar {
-      background-color: #f9f9f9;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: white;
-      box-shadow: #000;
+    /* “More options” section */
+    .section-title{
+      padding: 18px 16px 10px;
+      font-weight:500; font-size:27px;
     }
-
-    .top-bar ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      margin: 0;
-      padding: 0;
+    .more{
+      display:flex; flex-direction:column; gap:8px; padding: 0 8px 16px;
     }
-
-    .top-bar ul li {
-      display: flex;
-      align-items: center;
+    .more-item{
+      display:flex; align-items:center; gap:12px;
+      padding:12px 8px; border-radius:10px;
     }
-
-    .top-bar ul li a {
-      text-decoration: none;
-      color: white;
-      font-size: 16px;
+    .more-icon{
+      width:38px; height:38px; border-radius:10px;
+      background: var(--bg-soft);
+      display:flex; align-items:center; justify-content:center;
+      color:#111827;
     }
-
-    .settings i {
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    .logout {
-      margin-left: auto;
-    }
-
-    .send {
-      width: 100%;
-      padding: 10px;
-      font-size:18px;
-    }
-
-    #popup-images {
-      position: fixed;
-      top: 79.9%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-      visibility: hidden;
-      width: auto;
-      height: auto;
-    }
-
-    .popup-img {
-      width: 200px;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .image-container {
-      text-align: center;
-    }
-
-    .image-text {
-      font-size: 16px;
-      color: black;
-      margin-top: 50px;
-    }
-
-    .card {
-      position: fixed;
-      top: 70%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    .textCont {
-      text-align: center;
-    }
-    .linlin{
-      text-decoration: none;
-      color: #000;
-    }
-
-
-    #sendBtn {
-  background-color: #1d4ed8;
-  color: #fff;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: 500;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  width: 30%;
-  margin: 10px 20px;
-  transition: background-color 0.3s ease;
- margin-bottom: 30px;
-}
-
-#sendBtn:hover {
-  background-color: #2563eb; 
-}
-
-#sendBtn:active {
-  background-color: #1e40af; 
-}
-
-#sendBtn:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); 
-}
-.search-container {
-  position: relative;
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-.search-input {
-  width: 100%;
-  padding: 10px 10px 10px 35px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  outline: none;
-}
-
-.search-icon {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  color: #aaa;
-  font-size: 16px;
-}
+    .more-text{ font-size:16px; font-weight:600; }
   </style>
 </head>
 <body>
-  <div class="top-bar">
+  <div class="wrap">
+    <!-- Tab title -->
+    <div class="tabbar">
+      <a href="index.html" style="text-decoration:none; color:inherit;">
+        <span class="tablabel">Send Money</span>
+      </a>
+    </div>
 
-  </div>
+    <!-- Search -->
+    <div class="header">
+      <div class="search-box">
+        <i class="fas fa-search search-icon"></i>
+        <input id="searchInput" class="search-input" type="text" placeholder="Name, email, mobile" />
+      </div>
+    </div>
 
-  <div class="container">
+    <!-- Next button + Show all contacts -->
+    <div class="actions">
+      <button id="sendBtn" class="next-btn" disabled>Next</button>
+      <div>
+      <a class="link" href="#" onclick="alert('Coming soon')">Show all contacts</a>
+      </div>
+    </div>
 
-    <div>      <a href="index.html" class="linlin"><h2 class="send">Send Money</h2></a></div>
+    <!-- Suggestions (filled by JS) -->
+    <ul id="suggestionList" class="list"></ul>
 
-    <header>
-<div class="search-container">
-  <i class="fas fa-search search-icon"></i>
-  <input type="text" class="search-input" placeholder="Name, username or email" id="searchInput" />
-</div>
-    </header>
-<li style="list-style: none;">
-  <button id="sendBtn">Next</button>
-</li>
-
-     <a style="padding: 15px; size:7px; text-decoration: underline; color: #1d4ed8;">Show all contacts</a>
-         <div class="suggestion-title" style="font-weight:bold; font-size:20px;">More Options</div>
-
-    <ul class="suggestions" id="suggestionList"></ul>
+    <!-- More options -->
+    <div class="section-title">More options</div>
+    <div class="more">
+      <div class="more-item">
+        <div class="more-icon">
+          <img src="icon1.png" alt="Pool money" />
+        </div>
+        <div class="more-text">Pool money</div>
+      </div>
+      <div class="more-item">
+        <div class="more-icon">
+          <img src="icon2.png" alt="Split a bill" />
+        </div>
+        <div class="more-text">Split a bill</div>
+      </div>
+      <div class="more-item" style="border-bottom:none;">
+        <div class="more-icon">
+          <img src="icon3.png" alt="Send a digital gift card" />
+        </div>
+        <div class="more-text">Send a digital gift card</div>
+      </div>
+    </div>
   </div>
 
   <script>
+    // Seed data (same logic as your file)
     let suggestionsData = JSON.parse(localStorage.getItem("jsonData")) || [];
-
     if (!suggestionsData.length) {
       suggestionsData = [
         { name: 'John Doe', username: '@john', avatarText: 'JD' },
@@ -293,111 +215,116 @@
       ];
     }
 
-
-    
-
     const searchInput = document.getElementById('searchInput');
     const suggestionList = document.getElementById('suggestionList');
+    const sendBtn = document.getElementById('sendBtn');
 
-function selectUser(user) {
-  const selectedUser = {
-    name: user.name,
-    username: user.username.replace(/^@/, ''),
-    avatarText: user.avatarText
-  };
-  try {
-    localStorage.setItem('selectedUser', JSON.stringify(selectedUser));
-    console.log('Stored in localStorage:', selectedUser); // Debug log
-    window.location.href = 'sendMoney.html';
-  } catch (e) {
-    console.error('Failed to save to localStorage:', e);
-    alert('Error saving user data. Please check browser settings.');
-  }
-}
-
+    function selectUser(user) {
+      const selectedUser = {
+        name: user.name,
+        username: user.username.replace(/^@/, ''),
+        avatarText: user.avatarText
+      };
+      try {
+        localStorage.setItem('selectedUser', JSON.stringify(selectedUser));
+        window.location.href = 'sendMoney.html';
+      } catch (e) {
+        console.error('Failed to save to localStorage:', e);
+        alert('Error saving user data. Please check browser settings.');
+      }
+    }
 
     function renderSuggestions(data) {
       suggestionList.innerHTML = '';
+      if (!data || !data.length) return;
+      // Optional header above list (kept minimal like screenshot: hidden until typing)
+      // Uncomment if you want the grey "Suggested" row:
+      // const hdr = document.createElement('div');
+      // hdr.className = 'suggestion-title';
+      // hdr.textContent = 'Suggested';
+      // suggestionList.appendChild(hdr);
+
       data.forEach((user) => {
         const li = document.createElement('li');
-        li.classList.add('suggestion-item');
+        li.className = 'item';
 
-        const avatarDiv = document.createElement('div');
-        avatarDiv.classList.add('user-avatar');
-        avatarDiv.textContent = user.avatarText;
+        const avatar = document.createElement('div');
+        avatar.className = 'avatar';
+        avatar.textContent = user.avatarText;
 
-        const infoDiv = document.createElement('div');
-        infoDiv.classList.add('user-info');
+        const info = document.createElement('div');
+        info.className = 'info';
 
-        const nameSpan = document.createElement('span');
-        nameSpan.classList.add('user-name');
-        nameSpan.textContent = user.name;
+        const name = document.createElement('span');
+        name.className = 'name';
+        name.textContent = user.name;
 
-        const usernameSpan = document.createElement('span');
-        usernameSpan.classList.add('user-username');
-        usernameSpan.textContent = user.username;
+        const handle = document.createElement('span');
+        handle.className = 'handle';
+        handle.textContent = user.username;
 
-        infoDiv.appendChild(nameSpan);
-        infoDiv.appendChild(usernameSpan);
+        info.appendChild(name);
+        info.appendChild(handle);
 
-        const actionSpan = document.createElement('span');
-        actionSpan.classList.add('item-action');
-        actionSpan.textContent = '•';
-
-        li.appendChild(avatarDiv);
-        li.appendChild(infoDiv);
-        li.appendChild(actionSpan);
+        li.appendChild(avatar);
+        li.appendChild(info);
 
         li.addEventListener('click', () => selectUser(user));
         suggestionList.appendChild(li);
       });
     }
 
-    renderSuggestions(suggestionsData);
+    // Initially no list shown (matches screenshot feel)
+    renderSuggestions([]);
 
+    // Filter as you type (same logic)
     searchInput.addEventListener('input', function () {
       const query = this.value.trim();
+
+      // enable/disable "Next"
+      if (query.length > 0) {
+        sendBtn.disabled = false;
+        sendBtn.classList.add('enabled');
+      } else {
+        sendBtn.disabled = true;
+        sendBtn.classList.remove('enabled');
+      }
+
       if (!query) {
-        renderSuggestions(suggestionsData);
+        renderSuggestions([]);
         return;
       }
 
-      let filteredData = suggestionsData.filter((user) =>
+      let filtered = suggestionsData.filter((user) =>
         user.name.toLowerCase().includes(query.toLowerCase()) ||
         user.username.toLowerCase().includes(query.toLowerCase())
       );
 
-      if (filteredData.length === 0) {
+      if (filtered.length === 0) {
         const avatarLetters = query.slice(0, 2).toUpperCase();
-        filteredData.push({
+        filtered.push({
           name: query,
           username: '@' + query.replace(/\s+/g, ''),
           avatarText: avatarLetters
         });
       }
 
-      renderSuggestions(filteredData);
+      renderSuggestions(filtered);
     });
 
-    const sendBtn = document.getElementById('sendBtn');
+    // “Next” keeps your original behavior: create/select from input
+    sendBtn.addEventListener('click', () => {
+      const query = searchInput.value.trim();
+      if (!query) return;
 
-
-sendBtn.addEventListener('click', () => {
-  const query = searchInput.value.trim();
-  if (!query) {
-    alert('Please enter a name or username.');
-    return;
-  }
-
-  const avatarLetters = query.slice(0, 2).toUpperCase();
-  const user = {
-    name: query,
-    username: '@' + query.replace(/\s+/g, ''),
-    avatarText: avatarLetters
-  };
-
-  selectUser(user);
-});
+      const avatarLetters = query.slice(0, 2).toUpperCase();
+      const user = {
+        name: query,
+        username: '@' + query.replace(/\s+/g, ''),
+        avatarText: avatarLetters
+      };
+      selectUser(user);
+    });
   </script>
 </body>
 </html>
