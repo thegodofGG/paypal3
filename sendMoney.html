@@ -229,6 +229,22 @@
       }
       amountInput.value = value || '0.00';
     });
+                //update button 
+                function updateButtonLabel() {
+                  let amount = parseFloat(amountInput.value) || 0;
+                  if (amount > 0) {
+                    sendButton.textContent = `Send €${amount}`;
+                    sendButton.disabled = false;
+                  } else {
+                    sendButton.textContent = "Send";
+                    sendButton.disabled = true;
+                  }
+                }
+
+                // run when typing
+                amountInput.addEventListener('input', updateButtonLabel);
+                // run once on load
+                updateButtonLabel();
 
     // On clicking the send button
     sendButton.addEventListener('click', () => {
