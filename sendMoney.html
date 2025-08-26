@@ -109,6 +109,47 @@
       color: #999;
       padding: 0 10px;
     }
+
+     /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: #fff;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 -2px 8px rgba(0, 0, 123, 0.1);
+    }
+
+    .bottom-nav a {
+      color: #6b7280;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      text-align: center;
+      flex: 1;
+      padding: 8px 0;
+      transition: color 0.3s ease;
+    }
+
+    .bottom-nav a.active {
+      color: #0070fa;
+    }
+
+    .bottom-nav i {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .activity-item .avatar .use-str {
+      height: 15px;
+      width: 15px;
+    }
   </style>
 </head>
 <body>
@@ -129,6 +170,25 @@
     <p class="disclaimer">
       By sending money, you agree to PayPal’s user<br> agreement and privacy policy.
     </p>
+  </div>
+
+    <div class="bottom-nav">
+    <a href="dashboard.html" >
+      <i class="fas fa-home"></i>
+      Home
+    </a>
+    <a href="#">
+      <i class="fas fa-wallet"></i>
+      Wallet
+    </a>
+    <a href="#" class="active">
+      <i class="fas fa-money-check"></i>
+      Payments
+    </a>
+    <a href="#">
+      <i class="fas fa-user"></i>
+      Profile
+    </a>
   </div>
 
   <script>
