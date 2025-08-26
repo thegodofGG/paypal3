@@ -150,22 +150,30 @@
       color:#111827;
     }
     .more-text{ font-size:16px; font-weight:600; }
+    .search-box-border {
+      border: 1.2px solid #cbcbcb;
+      border-radius: 14px;  /* slightly bigger than inner */
+      padding: 20px;         /* space for inner border */
+    }
+   
   </style>
 </head>
 <body>
   <div class="wrap">
     <!-- Tab title -->
     <div class="tabbar">
-      <a href="index.html" style="text-decoration:none; color:inherit;">
+      <a href="#" style="text-decoration:none; color:inherit;">
         <span class="tablabel">Send Money</span>
       </a>
     </div>
 
     <!-- Search -->
     <div class="header">
+      <div class="search-box-border">
       <div class="search-box">
         <i class="fas fa-search search-icon"></i>
         <input id="searchInput" class="search-input" type="text" placeholder="Name, email, mobile" />
+      </div>
       </div>
     </div>
 
